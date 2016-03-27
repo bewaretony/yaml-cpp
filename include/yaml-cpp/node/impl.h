@@ -377,9 +377,11 @@ inline const Node Node::operator[](const Key& key) const {
   detail::node* value = static_cast<const detail::node&>(*m_pNode)
                             .get(detail::to_value(key), m_pMemory);
   if (!value) {
-    return Node(ZombieNode);
+    Node tr(ZombieNode);
+    return tr;
   }
-  return Node(*value, m_pMemory);
+  Node tr(*value, m_pMemory);
+  return tr;
 }
 
 template <typename Key>
@@ -388,7 +390,8 @@ inline Node Node::operator[](const Key& key) {
     throw InvalidNode();
   EnsureNodeExists();
   detail::node& value = m_pNode->get(detail::to_value(key), m_pMemory);
-  return Node(value, m_pMemory);
+  Node tr(value, m_pMemory);
+  return tr;
 }
 
 template <typename Key>
@@ -408,9 +411,13 @@ inline const Node Node::operator[](const Node& key) const {
   detail::node* value =
       static_cast<const detail::node&>(*m_pNode).get(*key.m_pNode, m_pMemory);
   if (!value) {
-    return Node(ZombieNode);
+    Node tr(ZombieNode);
+    tr.path << this->path.str() << "::" << key.as<std::string>();
+    return tr;
   }
-  return Node(*value, m_pMemory);
+  Node tr(*value, m_pMemory);
+  tr.path << this->path.str() << "::" << key.as<std::string>();
+  return tr;
 }
 
 inline Node Node::operator[](const Node& key) {
@@ -420,7 +427,9 @@ inline Node Node::operator[](const Node& key) {
   key.EnsureNodeExists();
   m_pMemory->merge(*key.m_pMemory);
   detail::node& value = m_pNode->get(*key.m_pNode, m_pMemory);
-  return Node(value, m_pMemory);
+  Node tr(value, m_pMemory);
+  tr.path << this->path.str() << "::" << key.as<std::string>();
+  return tr;
 }
 
 inline bool Node::remove(const Node& key) {

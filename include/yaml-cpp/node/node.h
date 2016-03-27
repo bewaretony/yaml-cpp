@@ -16,6 +16,7 @@
 #include "yaml-cpp/node/detail/iterator_fwd.h"
 #include "yaml-cpp/node/ptr.h"
 #include "yaml-cpp/node/type.h"
+#include <sstream>
 
 namespace YAML {
 namespace detail {
@@ -112,6 +113,8 @@ class YAML_CPP_API Node {
   // map
   template <typename Key, typename Value>
   void force_insert(const Key& key, const Value& value);
+  
+  std::stringstream path;
 
  private:
   enum Zombie { ZombieNode };
