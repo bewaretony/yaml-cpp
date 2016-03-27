@@ -117,12 +117,12 @@ struct as_if<T, void> {
 
   const T operator()() const {
     if (!node.m_pNode)
-      throw TypedBadConversion<T>(node.Mark());
+      throw TypedBadConversion<T>(node.Mark(), node.path.str());
 
     T t;
     if (convert<T>::decode(node, t))
       return t;
-    throw TypedBadConversion<T>(node.Mark());
+    throw TypedBadConversion<T>(node.Mark(), node.path.str());
   }
 };
 
@@ -133,7 +133,7 @@ struct as_if<std::string, void> {
 
   const std::string operator()() const {
     if (node.Type() != NodeType::Scalar)
-      throw TypedBadConversion<std::string>(node.Mark());
+      throw TypedBadConversion<std::string>(node.Mark(), node.path.str());
     return node.Scalar();
   }
 };

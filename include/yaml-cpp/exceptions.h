@@ -182,14 +182,14 @@ class InvalidNode : public RepresentationException {
 
 class BadConversion : public RepresentationException {
  public:
-  explicit BadConversion(const Mark& mark_)
-      : RepresentationException(mark_, ErrorMsg::BAD_CONVERSION) {}
+  explicit BadConversion(const Mark& mark_, std::string path)
+      : RepresentationException(mark_, std::string()+ErrorMsg::BAD_CONVERSION+" at "+path) {}
 };
 
 template <typename T>
 class TypedBadConversion : public BadConversion {
  public:
-  explicit TypedBadConversion(const Mark& mark_) : BadConversion(mark_) {}
+  explicit TypedBadConversion(const Mark& mark_, std::string path) : BadConversion(mark_, path) {}
 };
 
 class BadDereference : public RepresentationException {
